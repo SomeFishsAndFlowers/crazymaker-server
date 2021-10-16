@@ -1,0 +1,30 @@
+server:
+  port: 8000
+  servlet:
+    context-path: /demo-provider
+
+spring:
+  application:
+    name: demo-provider
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://${EUREKA_ZONE_HOST:localhost}:7777/eureka/
+    fetch-registry: true
+    register-with-eureka: true
+  instance:
+    prefer-ip-address: true
+    instance-id: ${spring.cloud.client.ip-address}:${server.port}
+    ip-address: ${spring.cloud.client.ip-address}
+
+feign:
+  hystrix:
+    enabled: true
+#hystrix:
+#  command:
+#    default:
+#      execution:
+#        isolation:
+#          thread:
+#            timeoutMilliseconds: 50000

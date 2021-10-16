@@ -1,0 +1,22 @@
+server:
+  port: 7788
+spring:
+  application:
+    name: config-server
+  profiles:
+    active: native
+  cloud:
+    config:
+      server:
+        native:
+          search-locations: classpath:config/
+eureka:
+  client:
+    service-url:
+      defaultZone: http://${EUREKA_ZONE_HOST:localhost}:7777/eureka/
+    fetch-registry: true
+    register-with-eureka: true
+  instance:
+    instance-id: ${spring.cloud.client.ip-address}:${server.port}
+    ip-address: ${spring.cloud.client.ip-address}
+    prefer-ip-address: true #优先使用ip地址访问

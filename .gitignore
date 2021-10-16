@@ -1,0 +1,8 @@
+# Project exclude paths
+/cloud-center/cloud-config/target/
+/cloud-center/cloud-eureka/target/
+/cloud-center/cloud-zuul/target/
+/crazymaker-demo/demo-provider/target/
+/crazymaker-uaa/uaa-api/target/
+/crazymaker-uaa/uaa-client/target/
+/crazymaker-uaa/uaa-provider/target/

@@ -1,0 +1,37 @@
+server:
+  port: 7702
+  servlet:
+    context-path: /uaa-provider # 配置根目录
+spring:
+  redis:
+    finish: bootstrap
+  application:
+    name: uaa-provider
+  # spring could config
+  cloud:
+    config:
+      label: dev
+      profile: redis
+      discovery: # eureka自动发现
+        enabled: true
+        service-id: config-server
+#      uri: http://${CONFIG-HOST:localhost}:7788/
+eureka:
+  client:
+    service-url:
+      defaultZone: http://${EUREKA_ZONE_HOST:localhost}:7777/eureka/
+    fetch-registry: true
+    register-with-eureka: true
+  instance:
+    instance-id: ${spring.cloud.client.ip-address}:${server.port}
+    ip-address: ${spring.cloud.client.ip-address}
+    prefer-ip-address: true #优先使用ip地址访问
+    status-page-url-path: /${server.servlet.context-path}${management.endpoints.web.base-path}/info
+    health-check-url-path: /${server.servlet.context-path}${management.endpoints.web.base-path}/health
+management:
+  endpoints:
+    web:
+      base-path: /actuator
+      exposure:
+        include: ["env"]
+

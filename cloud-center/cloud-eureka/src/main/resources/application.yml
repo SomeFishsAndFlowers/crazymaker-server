@@ -1,0 +1,18 @@
+server:
+  port: 7777
+
+spring:
+  application:
+    name: eureka-server
+
+eureka:
+  client:
+    register-with-eureka: false
+    fetch-registry: false
+    service-url:
+      defaultZone: http://localhost:7777/eureka/
+  instance:
+    hostname: ${EUREKA_ZONE_HOST:localhost}
+  server:
+    enable-self-preservation: true # 开启自我保护
+    eviction-interval-timer-in-ms: 60000 #扫描失效服务的间隔时间
