@@ -7,3 +7,5 @@
 /crazymaker-uaa/uaa-client/target/
 /crazymaker-uaa/uaa-provider/target/
 /.idea
+
+*.iml

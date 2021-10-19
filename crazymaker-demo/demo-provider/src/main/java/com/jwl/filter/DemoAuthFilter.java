@@ -3,9 +3,12 @@ package com.jwl.filter;
 import com.jwl.security.token.DemoToken;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -39,7 +42,9 @@ public class DemoAuthFilter extends OncePerRequestFilter {
             boolean succeed;
             String username = request.getParameter("username");
             String password = request.getParameter("password");
-            DemoToken token = new DemoToken(username, password);
+//            DemoToken token = new DemoToken(username, password);
+            UserDetails userDetails = User.builder().username(username).password(password).authorities("USER").build();
+            Authentication token = new UsernamePasswordAuthenticationToken(userDetails, password);
             returnToken = getAuthenticationManager().authenticate(token);
             succeed = returnToken.isAuthenticated();
             if(succeed) {
