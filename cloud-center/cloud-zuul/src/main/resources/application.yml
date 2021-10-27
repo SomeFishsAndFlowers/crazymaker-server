@@ -21,6 +21,8 @@ eureka:
   client:
     service-url:
       defaultZone: http://${EUREKA_ZONE_HOST:localhost}:7777/eureka/
+    register-with-eureka: false
+    fetch-registry: false
   instance:
     prefer-ip-address: true
     instance-id: ${spring.cloud.client.ip-address}:${server.port}
@@ -30,11 +32,16 @@ server:
 spring:
   application:
     name: zuul-application
+  redis:
+    password: 123456
+  session:
+    store-type: redis
 ribbon:
   ReadTimeout: 600000
   ConnectTimeout: 600000
   MaxAutoRetries: 0
   MaxAutoRetriesNextServer: 1
+
 #hystrix:
 #  command:
 #    default:
