@@ -10,10 +10,16 @@ import rx.Scheduler;
 import rx.Single;
 import rx.observables.GroupedObservable;
 import rx.schedulers.Schedulers;
+import rx.Subscriber;
+import rx.Subscription;
+import rx.observables.ConnectableObservable;
+import rx.observers.Subscribers;
+import rx.subscriptions.Subscriptions;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 import java.util.Random;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
@@ -175,6 +181,48 @@ public class RxJavaTest {
             s.onError(new Exception("error"));
         }).subscribe(System.out::println, System.out::println);
         System.out.println(2);
+    }
+
+
+     @Test
+    public void testConnectableObservable() {
+         Observable<Object> observable = Observable.create(s -> {
+             System.out.println("connected");
+             s.onNext(1);
+             s.onNext(2);
+//             s.onCompleted();
+             s.add(Subscriptions.create(() -> System.out.println("disconnected")));
+         });
+//         Subscription subscribe = observable.subscribe(System.out::println);
+//         Subscription subscribe1 = observable.subscribe(System.out::println);
+//         subscribe.unsubscribe();
+//         subscribe1.unsubscribe();
+//         Observable<Object> refCount = observable.publish().refCount();
+//         Observable<Object> refCount = observable.share();
+         ConnectableObservable<Object> publish = observable.publish();
+         Subscription subscribe = publish.subscribe(System.out::println);
+         Subscription subscribe1 = publish.subscribe(System.out::println);
+         publish.connect();
+         subscribe.unsubscribe();
+         System.out.println(123);
+         subscribe1.unsubscribe();
+    }
+
+    @Test
+    public void testFlatMap() {
+        Observable<Integer> range = Observable.range(0, 100);
+        Observable<String> complete = range.flatMap(e -> Observable.empty(), Observable::error, () -> Observable.just("complete"));
+        complete.subscribe(System.out::println, System.out::println, System.out::println);
+    }
+
+    @Test
+    public void square() {
+        Observable<Integer> oneToEight = Observable.range(1, 8);
+        Observable<String> rank = oneToEight.map(Objects::toString);
+        Observable<String> file = oneToEight.map(i -> 'a' + i - 1)
+                .map(i -> (char) i.intValue())
+                .map(i -> Character.toString(i));
+        file.flatMap(f -> rank.map(r -> f + r)).subscribe(System.out::println);
     }
 
     @Test
