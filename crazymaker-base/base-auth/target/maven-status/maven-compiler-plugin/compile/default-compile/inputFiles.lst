@@ -1,0 +1,5 @@
+/Users/jiwenlong/Desktop/crazymaker-server/crazymaker-base/base-auth/src/main/java/com/jwl/base/security/config/SecurityConfig.java
+/Users/jiwenlong/Desktop/crazymaker-server/crazymaker-base/base-auth/src/main/java/com/jwl/base/security/provider/JwtAuthenticationProvider.java
+/Users/jiwenlong/Desktop/crazymaker-server/crazymaker-base/base-auth/src/main/java/com/jwl/base/security/token/JwtAuthenticationToken.java
+/Users/jiwenlong/Desktop/crazymaker-server/crazymaker-base/base-auth/src/main/java/com/jwl/base/security/config/SecurityAuthConfig.java
+/Users/jiwenlong/Desktop/crazymaker-server/crazymaker-base/base-auth/src/main/java/com/jwl/base/security/filter/JwtAuthenticationFilter.java
