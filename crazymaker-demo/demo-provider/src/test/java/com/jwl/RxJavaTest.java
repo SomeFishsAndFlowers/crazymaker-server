@@ -289,4 +289,21 @@ public class RxJavaTest {
         TimeUnit.SECONDS.sleep(100);
     }
 
+
+    @Test
+    public void testSchedule() {
+        Observable.just("apple", "banana", "cheese", "tomato")
+                .map((e) -> {
+                    logMsg(e);
+                    return e;
+                })
+                .subscribeOn(Schedulers.io())
+                .subscribe(RxJavaTest::logMsg);
+    }
+
+
+
+    private static void logMsg(String msg) {
+        System.out.println(Thread.currentThread().getName() + ": " + msg);
+    }
 }
