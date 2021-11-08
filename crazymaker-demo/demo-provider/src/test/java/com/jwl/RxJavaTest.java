@@ -2,11 +2,13 @@ package com.jwl;
 
 
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.tuple.Pair;
 import org.junit.Test;
 import rx.Observable;
 import rx.Observer;
 import rx.Scheduler;
 import rx.Single;
+import rx.observables.GroupedObservable;
 import rx.schedulers.Schedulers;
 import rx.Subscriber;
 import rx.Subscription;
@@ -14,6 +16,8 @@ import rx.observables.ConnectableObservable;
 import rx.observers.Subscribers;
 import rx.subscriptions.Subscriptions;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 import java.util.Random;
@@ -221,4 +225,85 @@ public class RxJavaTest {
         file.flatMap(f -> rank.map(r -> f + r)).subscribe(System.out::println);
     }
 
+    @Test
+    public void wordLengthDelay() throws InterruptedException {
+        ArrayList<String> words = new ArrayList<String>() {{
+            add("Thought");
+            add("this");
+            add("word");
+        }};
+        Observable<String> word = Observable.from(words);
+        word.flatMap((w) -> {
+            System.out.println(w);
+            return Observable.just(w).delay(w.length(), TimeUnit.SECONDS);
+        }).subscribe(System.out::println);
+        TimeUnit.SECONDS.sleep(100);
+    }
+
+    @Test
+    public void wordLengthDelay1() throws InterruptedException {
+        ArrayList<String> words = new ArrayList<String>() {{
+            add("Thought");
+            add("this");
+            add("word");
+        }};
+        Observable<String> word = Observable.from(words);
+        Observable<Integer> length = word.map(String::length).scan(Integer::sum).startWith(0);
+        word.zipWith(length, Pair::of)
+            .flatMap((pair) -> Observable.just(pair.getLeft()).delay(pair.getRight(), TimeUnit.SECONDS))
+            .subscribe(System.out::println);
+        TimeUnit.SECONDS.sleep(100);
+    }
+
+    @Test
+    public void testZip() {
+        Observable<Integer> just = Observable.just(1, 2, 3);
+        Observable<Integer> just1 = Observable.just(1, 2);
+        just.zipWith(just1, (a, b) -> a + ":" + b).subscribe(System.out::println);
+    }
+
+    @Test
+    public void testGroupBy() {
+        Observable<GroupedObservable<String, Integer>> groupedObservableObservable = Observable.just(1, 2, 2, 3, 1, 2).groupBy(String::valueOf);
+        groupedObservableObservable.subscribe((ob) -> {
+            System.out.println("---------------------" + Thread.currentThread().getName());
+            ob.forEach(System.out::println);
+        });
+    }
+
+    @Test
+    public void testGroupBy1() throws InterruptedException {
+        Random random = new Random();
+        Observable<Object> observable = Observable.create((s) -> {
+            new Thread(() -> {
+                while (true) {
+                    s.onNext(random.nextInt(10));
+                }
+            }).start();
+        });
+        Observable<GroupedObservable<String, Object>> groupedObservableObservable = observable.groupBy(String::valueOf);
+        groupedObservableObservable.subscribe((ob) -> {
+            System.out.println("---------------------" + Thread.currentThread().getName());
+            ob.forEach(System.out::println);
+        });
+        TimeUnit.SECONDS.sleep(100);
+    }
+
+
+    @Test
+    public void testSchedule() {
+        Observable.just("apple", "banana", "cheese", "tomato")
+                .map((e) -> {
+                    logMsg(e);
+                    return e;
+                })
+                .subscribeOn(Schedulers.io())
+                .subscribe(RxJavaTest::logMsg);
+    }
+
+
+
+    private static void logMsg(String msg) {
+        System.out.println(Thread.currentThread().getName() + ": " + msg);
+    }
 }
