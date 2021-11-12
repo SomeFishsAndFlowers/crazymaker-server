@@ -6,6 +6,9 @@ import io.netty.channel.*;
 import io.netty.channel.embedded.EmbeddedChannel;
 import org.junit.Test;
 
+import java.util.HashMap;
+import java.util.Objects;
+
 public class NettyTest {
 
     public static class OutBoundHandlerA extends ChannelOutboundHandlerAdapter {
